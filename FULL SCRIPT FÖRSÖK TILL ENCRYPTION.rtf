@@ -1,0 +1,268 @@
+{\rtf1\ansi\ansicpg1252\cocoartf2636
+\cocoatextscaling0\cocoaplatform0{\fonttbl\f0\fswiss\fcharset0 Helvetica;}
+{\colortbl;\red255\green255\blue255;}
+{\*\expandedcolortbl;;}
+\paperw11900\paperh16840\margl1440\margr1440\vieww11520\viewh8400\viewkind0
+\pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural\partightenfactor0
+
+\f0\fs24 \cf0 DROP DATABASE IF EXISTS biograf; \
+CREATE DATABASE biograf; \
+USE biograf;\
+SET SQL_SAFE_UPDATES=0;\
+\
+CREATE TABLE upcomming_screenings (\
+movie_ID INT UNSIGNED NOT NULL AUTO_INCREMENT,\
+title VARCHAR(255),\
+studio VARCHAR(255),\
+screening_date DATETIME,\
+saloon VARCHAR(255),\
+avalible_tickets INT UNSIGNED,\
+PRIMARY KEY (movie_ID)\
+);\
+\
+CREATE TABLE saloons (\
+saloon_ID INT UNSIGNED NOT NULL AUTO_INCREMENT,\
+saloon_name VARCHAR(255),\
+seats INT,\
+PRIMARY KEY (saloon_ID)\
+);\
+\
+CREATE TABLE staff (\
+staff_ID INT UNSIGNED NOT NULL AUTO_INCREMENT,\
+name VARCHAR(255),\
+salary VARCHAR (100),\
+salt1 VARCHAR (50),\
+email_address VARCHAR(100),\
+salt2 VARCHAR (50),\
+PRIMARY KEY (staff_ID)\
+)DEFAULT CHARSET 'latin1';\
+\
+CREATE TABLE shifts (\
+shift_ID INT UNSIGNED NOT NULL AUTO_INCREMENT,\
+staff_ID INT UNSIGNED NOT NULL,\
+start_time DATETIME,\
+end_time DATETIME,\
+PRIMARY KEY (shift_ID)\
+)DEFAULT CHARSET 'latin1';\
+\
+CREATE TABLE customers (\
+customer_ID INT UNSIGNED NOT NULL AUTO_INCREMENT,\
+customer_name VARCHAR(255),\
+customer_email VARCHAR(255),\
+salt1 VARCHAR(255),\
+creditcard_number VARCHAR(255),\
+salt2 VARCHAR(255),\
+PRIMARY KEY (customer_ID)\
+)DEFAULT CHARSET 'latin1';\
+\
+CREATE TABLE transactions (\
+customer_ID INT UNSIGNED NOT NULL AUTO_INCREMENT,\
+tickets_purchased INT,\
+saloon VARCHAR(255),\
+title VARCHAR(255),\
+date_of_purchase DATE,\
+PRIMARY KEY (customer_ID)\
+);\
+\
+/* STORED FUNCTION - Randomly generated code */\
+DELIMITER $$\
+CREATE FUNCTION random_code (desired_code_len INTEGER) RETURNS VARCHAR(100)\
+DETERMINISTIC\
+BEGIN\
+	SET @possible_characters = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ'; -- Hopefully this will eliminate random exit-characters!\
+	SET @len =  LENGTH(@possible_characters);\
+    SET @random_code = '';\
+	append_char_to_random_code: LOOP\
+		IF LENGTH(@random_code) >= desired_code_len THEN\
+			LEAVE append_char_to_random_code;\
+		END IF;\
+		SET @random_char_pos = FLOOR(RAND()*(@len - 0 + 1) + 0);\
+		SET @extracted_char = SUBSTRING(@possible_characters, @random_char_pos, 1);\
+		SET @random_code = CONCAT(@random_code, @extracted_char);\
+	END LOOP;\
+	RETURN @random_code;\
+END $$\
+\
+/* STORED PROCEDURE - ADD Saloon */\
+DELIMITER $$\
+CREATE PROCEDURE add_saloon (saloon_name VARCHAR(20), SEATS INT)\
+BEGIN\
+INSERT INTO saloons (saloon_name, seats)\
+VALUES (saloon_name, seats);\
+END$$\
+DELIMITER ;\
+\
+/* ADDING DEFAULT VALUES */\
+CALL biograf.add_saloon('J\'d6NS', 5);\
+CALL biograf.add_saloon('\'c4PPLE', 50);\
+CALL biograf.add_saloon('BANAN', 100);\
+CALL biograf.add_saloon('P\'c4RON', 77);\
+\
+/* STORED PROCEDURE - ADD SCREENING */\
+DELIMITER $$\
+CREATE PROCEDURE add_screening (title VARCHAR(255), studio VARCHAR(255), screening_date DATETIME, saloon VARCHAR(255))\
+BEGIN\
+\
+SELECT @avalible_tickets := (seats) FROM saloons WHERE saloon_name = saloon;\
+\
+INSERT INTO upcomming_screenings (title, studio, screening_date, saloon, avalible_tickets) \
+VALUES (title, studio, screening_date, saloon, @avalible_tickets);\
+\
+END$$\
+DELIMITER ;\
+\
+/* ADDING DEFAULT VALUES */\
+CALL biograf.add_screening('Batman', 'Warner', '2022-03-18 22:00:00', 'J\'f6ns');\
+CALL biograf.add_screening('Star Wars', 'Fox', '2022-03-24 19:00:00', '\'c4pple');\
+CALL biograf.add_screening('Goldeneye', 'Metro-Goldwyn-Mayer', '2022-04-02 20:00:00', 'Banan');\
+CALL biograf.add_screening('Aja-Bajja Alfons \'c5berg', 'SVT', '2022-04-06 12:00:00', 'P\'e4ron');\
+\
+/* STORED PROCEDURE - ADD SHIFT */\
+DELIMITER $$\
+USE `biograf`$$\
+CREATE PROCEDURE `add_shift` (staff_ID INT, start_time DATETIME, end_time DATETIME)\
+BEGIN\
+INSERT INTO shifts(staff_ID, start_time, end_time)\
+VALUES (staff_ID, start_time, end_time);\
+END$$\
+\
+DELIMITER ;\
+\
+/* ADDING DEFAULT VALUES */\
+call biograf.add_shift(2, '2022-04-06 12:00:00', '2022-04-06 12:30:00');\
+call biograf.add_shift(1, '2022-03-18 21:30:00', '2022-03-18 23:59:00');\
+call biograf.add_shift(4, '2022-03-24 18:30:00', '2022-03-24 21:00:00');\
+call biograf.add_shift(3, '2022-04-02 19:00:00', '2022-04-02 23:00:00');\
+\
+/* STORED PROCEDURE - ADD STAFF */\
+DELIMITER $$\
+CREATE PROCEDURE `add_staff` (name VARCHAR(50), salary VARCHAR (10), email_address VARCHAR (100))\
+\
+BEGIN\
+SET @random_salt1 = md5(rand());\
+SET @random_salt2 = md5(rand());\
+SET @key1 = concat(name, ' key1');\
+SET @key2 = concat(name, ' key2');\
+ \
+INSERT INTO staff (name, salary, salt1, email_address, salt2)\
+VALUES (name, aes_encrypt(concat(salary, @random_salt1), @key1), @random_salt1,\
+aes_encrypt(concat(email_address, @random_salt2), @key2), @random_salt2);\
+\
+END$$\
+DELIMITER ;\
+\
+/* ADDING DEFAULT VALUES */\
+CALL biograf.add_staff('Patrik Selberg', '40000', 'Puttrik@hotmail.com');\
+CALL biograf.add_staff('Martin Charlemaine', '32000', 'kejsarn@HRE.com');\
+CALL biograf.add_staff('Nicklas Jeng', '20000', 'jengg\'e4nget@hotmail.com');\
+CALL biograf.add_staff('Julius "Stilig" Thomsen', '90000', 'Julius@gmail.com');\
+\
+DELIMITER $$\
+\
+/* STORED PROCEDURE - DECRYPT STAFF */\
+CREATE PROCEDURE `decrypt_staff` (salary_salt VARCHAR (50), salary_key VARCHAR(50), email_salt VARCHAR(50), email_key VARCHAR(50))\
+BEGIN\
+	SELECT staff_ID, name,\
+	REPLACE(cast(aes_decrypt(salary, salary_key) AS CHAR(100)), salary_salt, '') AS salary, \
+	REPLACE(cast(aes_decrypt(email_address, email_key) AS CHAR(100)), email_salt, '') AS email_address\
+	FROM staff ORDER BY salary; \
+\
+END$$\
+\
+DELIMITER ;\
+/* EXAMPLE: \
+>ALERT< Remember to use current randomized salt!\
+\
+CALL decrypt_staff ('2a7b57e6a12fe23bdddaf7e04e0c3c49', 'Patrik Selberg key1', '51046bde5d8b5e5db184befc0c43d704', 'Patrik Selberg key2');\
+*/\
+\
+\
+/* STORED PROCEDURE - ADD CUSTOMER */\
+DELIMITER $$\
+CREATE PROCEDURE `add_customer` (customer_name VARCHAR(50), email_address VARCHAR (100), credit_card_nr VARCHAR (100))\
+\
+BEGIN\
+SET @random_salt1 = random_code(30);\
+SET @random_salt2 = random_code(30);\
+SET @key1 = concat(customer_name, ' key1');\
+SET @key2 = concat(customer_name, ' key2');\
+ \
+INSERT INTO customers (customer_name, customer_email, salt1, creditcard_number, salt2)\
+VALUES (customer_name, \
+aes_encrypt(concat(email_address, @random_salt1), @key1),\
+@random_salt1,\
+aes_encrypt(concat(credit_card_nr, @random_salt2), @key2), \
+@random_salt2);\
+\
+END$$\
+DELIMITER ;\
+\
+/* ADDING DEFAULT VALUES */\
+call biograf.add_customer('Julius Thomsen', 'jutasd@hotmail.com', '522664789952114');\
+call biograf.add_customer('Martin Charlemaine', 'marrcharasd@gmail.com', '955688741120101');\
+call biograf.add_customer('Patrik Selberg', 'bergetasd@outlook.com', '8852024544116936');\
+call biograf.add_customer('Niklas Jeng', 'jengg\'e4ngetasd@gmail.com', '0223636998541152');\
+DELIMITER $$\
+\
+\
+/* STORED PROCEDURE - DECRYPT STAFF */\
+CREATE PROCEDURE `decrypt_customer` (email_salt VARCHAR (50), email_key VARCHAR(50), creditcard_salt VARCHAR(50), creditcard_key VARCHAR(50))\
+BEGIN\
+	SELECT customer_ID, customer_name,\
+	REPLACE(cast(aes_decrypt(customer_email, email_key) AS CHAR(100)), email_salt, '') AS customer_email, \
+	REPLACE(cast(aes_decrypt(creditcard_number, creditcard_key) AS CHAR(100)), creditcard_salt, '') AS creditcard_number\
+	FROM customers ORDER BY customer_ID; \
+\
+END$$\
+\
+DELIMITER ;\
+/* EXAMPLE: \
+>ALERT< Remember to use current randomized salt!\
+\
+CALL decrypt_customer ('75a39e6aeab69974aaffda1f56ac15fb', 'Julius Thomsen key1', 'f43a04316fc7ec9ee371bc888d04cb01', 'Julius Thomsen key2');\
+*/\
+\
+\
+/* STORED PROCEDURE - BOOK TICKETS */\
+DELIMITER $$\
+CREATE PROCEDURE `book_ticket(s)` (tickets INT, movie_by_ID INT)\
+BEGIN\
+\
+DECLARE `rollback` bool DEFAULT 0;\
+DECLARE CONTINUE HANDLER FOR SQLEXCEPTION SET `rollback` = 1;\
+\
+START transaction;\
+UPDATE upcomming_screenings\
+SET avalible_tickets = avalible_tickets - tickets\
+WHERE movie_ID = movie_by_ID;\
+\
+SELECT @saloon := saloon FROM upcomming_screenings WHERE movie_ID = movie_by_ID;\
+SELECT @title := title FROM upcomming_screenings WHERE movie_ID = movie_by_ID;  \
+\
+INSERT INTO transactions (tickets_purchased, saloon, title, date_of_purchase)\
+VALUES (tickets, @saloon, @title, CURRENT_DATE);\
+\
+IF `rollback` THEN \
+SET @ERROR_TEXT = 'a ROLLBACK has occured, check stock';\
+SELECT @ERROR_TEXT; \
+ROLLBACK;\
+\
+ELSE COMMIT;\
+\
+END IF; \
+\
+END$$\
+\
+DELIMITER ;\
+\
+/* EXAMPLE: \
+CALL biograf.`book_ticket(s)`(3, 1);\
+*/\
+\
+\
+-- SELECT * FROM customers;\
+-- SELECT * FROM upcomming_screenings;\
+-- SELECT * FROM saloons;\
+-- SELECT * FROM staff;\
+-- SELECT * FROM shifts;\
+-- SELECT * FROM staff;add_saloon}
