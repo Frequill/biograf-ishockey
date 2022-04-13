@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane prefHeight="600.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="mainPkg.AddMoviesController">
+   <children>
+      <Label alignment="CENTER" layoutX="277.0" layoutY="49.0" prefHeight="17.0" prefWidth="247.0" text="Lägg till film...">
+         <font>
+            <Font size="18.0" />
+         </font>
+      </Label>
+      <TextField fx:id="titleTextField" layoutX="282.0" layoutY="80.0" prefHeight="25.0" prefWidth="237.0" promptText="Filmtitel.." />
+      <TextField fx:id="studioTextField" layoutX="282.0" layoutY="120.0" prefHeight="25.0" prefWidth="237.0" promptText="Studionamn.." />
+      <TextField fx:id="screeningdateTextField" layoutX="282.0" layoutY="160.0" prefHeight="25.0" prefWidth="237.0" promptText="Visningsdatum (YYYY-MM-DD HH:MM)" />
+      <TextField fx:id="saloonTextField" layoutX="282.0" layoutY="200.0" prefHeight="25.0" prefWidth="237.0" promptText="Existerande salong.." />
+      <Button layoutX="14.0" layoutY="561.0" mnemonicParsing="false" onAction="#goToAdminScreen" text="Tillbaka" />
+      <Button layoutX="300.0" layoutY="238.0" mnemonicParsing="false" onAction="#confirmMovie" prefHeight="62.0" prefWidth="203.0" text="Lägg till och bekräfta" />
+      <Button layoutX="299.0" layoutY="429.0" mnemonicParsing="false" onAction="#goToAllScreeningsScene" prefHeight="62.0" prefWidth="203.0" text="Alla uppkommande filmvisningar" />
+      <Label fx:id="movieAddedLabel" alignment="CENTER" layoutX="299.0" layoutY="310.0" prefHeight="17.0" prefWidth="203.0" />
+   </children>
+</AnchorPane>

@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+
+<AnchorPane prefHeight="600.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="mainPkg.AddShiftScreenController">
+   <children>
+      <TextField fx:id="startTimeTextField" layoutX="112.0" layoutY="425.0" prefHeight="26.0" prefWidth="233.0" promptText="Start time (YYYY-MM-DD HH:MM)" />
+      <TextField fx:id="endTimeTextField" layoutX="112.0" layoutY="462.0" prefHeight="26.0" prefWidth="233.0" promptText="End time (YYYY-MM-DD HH:MM)" />
+      <Button layoutX="112.0" layoutY="322.0" mnemonicParsing="false" onAction="#confirmInput" prefHeight="48.0" prefWidth="211.0" text="Lägg till arbetspass" />
+      <Button layoutX="14.0" layoutY="556.0" mnemonicParsing="false" onAction="#goToStaffScreen" text="Tillbaka" />
+      <Button layoutX="323.0" layoutY="322.0" mnemonicParsing="false" onAction="#showAllShifts" prefHeight="48.0" prefWidth="155.0" text="Visa schemalagda pass" />
+      <Button layoutX="478.0" layoutY="322.0" mnemonicParsing="false" onAction="#confirmRemove" prefHeight="48.0" prefWidth="211.0" text="Ta bort arbetspass" />
+      <TextField fx:id="shiftIDTextField" layoutX="478.0" layoutY="385.0" prefHeight="26.0" prefWidth="233.0" promptText="Shift_ID.." />
+      <Label fx:id="shiftRemovedMsg" layoutX="478.0" layoutY="430.0" prefHeight="18.0" prefWidth="211.0" />
+      <Label fx:id="shiftAddedMsg" layoutX="112.0" layoutY="498.0" prefHeight="18.0" prefWidth="211.0" />
+      <Label fx:id="displayAllShifts" contentDisplay="BOTTOM" layoutX="112.0" layoutY="155.0" prefHeight="160.0" prefWidth="576.0" wrapText="true" />
+      <TextField fx:id="staff_IDTextField" layoutX="112.0" layoutY="385.0" prefHeight="26.0" prefWidth="233.0" promptText="Staff_ID.." />
+   </children>
+</AnchorPane>

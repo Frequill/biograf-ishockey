@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.ChoiceBox?>
+<?import javafx.scene.control.DatePicker?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.text.Font?>
+
+
+<AnchorPane prefHeight="600.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="mainPkg.CustomerScreenController">
+   <children>
+      <Label alignment="CENTER" contentDisplay="CENTER" layoutX="258.0" layoutY="26.0" prefHeight="23.0" prefWidth="286.0" text="Välj valfri film samt datum nedan">
+         <font>
+            <Font size="18.0" />
+         </font>
+      </Label>
+      <ChoiceBox layoutX="325.0" layoutY="95.0" prefWidth="150.0" />
+      <DatePicker layoutX="308.0" layoutY="69.0" />
+   </children>
+</AnchorPane>
